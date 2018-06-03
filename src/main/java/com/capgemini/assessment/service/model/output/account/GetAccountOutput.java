@@ -14,6 +14,6 @@ public class GetAccountOutput {
 
     private long id;
     private long customerId;
-    private String currencyType;
+    private String currency;
     private long balance;
 }

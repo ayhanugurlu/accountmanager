@@ -118,7 +118,7 @@ public class TransactionView extends VerticalLayout implements View {
         getAccountOutputGrid.setItems(accountService.getCustomerAccounts(getCustomerOutput.getId()));
         getAccountOutputGrid.addColumn(getAccountOutput -> getAccountOutput.getId()).setCaption("Id");
         getAccountOutputGrid.addColumn(getAccountOutput -> getAccountOutput.getCustomerId()).setCaption("Customer Id");
-        getAccountOutputGrid.addColumn(getAccountOutput -> getAccountOutput.getCurrencyType()).setCaption("Currency Type");
+        getAccountOutputGrid.addColumn(getAccountOutput -> getAccountOutput.getCurrency()).setCaption("Currency Type");
         getAccountOutputGrid.addColumn(getAccountOutput -> getAccountOutput.getBalance()).setCaption("Balance");
         accountLayout.addComponent(getAccountOutputGrid);
         Button addCustomer = new Button("Add Account");

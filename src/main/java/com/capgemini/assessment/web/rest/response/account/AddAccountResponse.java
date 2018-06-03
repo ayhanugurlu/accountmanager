@@ -13,7 +13,6 @@ import lombok.Setter;
 public class AddAccountResponse {
     private long id;
     private long customerId;
-    private String currencyType;
-    private long amount;
+    private String currency;
 
 }
