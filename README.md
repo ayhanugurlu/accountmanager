@@ -23,6 +23,10 @@ Alternatively you can use the [Spring Boot Maven plugin](https://docs.spring.io/
 mvn spring-boot:run
 ```
 
-When the application is running, you can see endpoints from link below:
+- When the application is running, you can see endpoints from link below:
 
-[http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)
+    [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)
+
+- You can see the customer, account and transaction records and add new ones by opening page in the link below:
+
+    [http://localhost:8081/assessment](http://localhost:8081/assessment)
