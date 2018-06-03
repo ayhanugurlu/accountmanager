@@ -43,7 +43,7 @@ public class AccountRest {
             notes = "add account for customer<br/>")
     @PostMapping("account")
     public @ResponseBody
-    AddAccountResponse addAccount(@ApiParam(value = "owner id, currency type, amount") @RequestBody AddAccountRequest addAccountRequest) throws CustomerNotFoundException, AccountNotFoundException, InsufficientBalanceException {
+    AddAccountResponse addAccount(@ApiParam(value = "owner id, currency, amount") @RequestBody AddAccountRequest addAccountRequest) throws CustomerNotFoundException, AccountNotFoundException, InsufficientBalanceException {
         log.debug("addAccount method start", tracer.getCurrentSpan().getTraceId());
         AddAccountInput input = mapperFacade.map(addAccountRequest, AddAccountInput.class);
         AddAccountOutput output = accountService.addAccount(input);
