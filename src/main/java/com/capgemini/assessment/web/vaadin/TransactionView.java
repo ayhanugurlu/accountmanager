@@ -13,6 +13,7 @@ import com.capgemini.assessment.service.model.input.transaction.TransactionInput
 import com.capgemini.assessment.service.model.output.account.GetAccountOutput;
 import com.capgemini.assessment.service.model.output.account.AccountTransactionOutput;
 import com.capgemini.assessment.service.model.output.customer.GetCustomerOutput;
+import com.vaadin.data.HasValue;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
@@ -42,6 +43,8 @@ public class TransactionView extends VerticalLayout implements View {
     VerticalLayout transactionLayout;
 
     Grid<GetAccountOutput> getAccountOutputGrid = null;
+    Grid<AccountTransactionOutput> transactionGrid = null;
+
 
     private long selectedCustomerId;
 
@@ -50,18 +53,18 @@ public class TransactionView extends VerticalLayout implements View {
 
         customerLayout = buildCustomer();
         this.addComponent(customerLayout);
-        this.setComponentAlignment(customerLayout, Alignment.MIDDLE_CENTER);
     }
 
 
     private VerticalLayout buildCustomer() {
         VerticalLayout verticalLayout = new VerticalLayout();
         Grid<GetCustomerOutput> customerOutputGrid = new Grid<>();
+        customerOutputGrid.setCaption("Customers");
         customerOutputGrid.setItems(customerService.getAllCustomer());
         customerOutputGrid.addColumn(getCustomerOutput -> getCustomerOutput.getId()).setCaption("Id");
         customerOutputGrid.addColumn(getCustomerOutput -> getCustomerOutput.getName()).setCaption("Name");
         customerOutputGrid.addColumn(getCustomerOutput -> getCustomerOutput.getSurname()).setCaption("Surname");
-        customerOutputGrid.addColumn(getCustomerOutput -> getCustomerOutput.getIdentityNumber()).setCaption("Nationality");
+        customerOutputGrid.addColumn(getCustomerOutput -> getCustomerOutput.getIdentityNumber()).setCaption("Identity Number");
         verticalLayout.addComponent(customerOutputGrid);
         Button addCustomer = new Button("Add Customer");
         addCustomer.addClickListener(event -> {
@@ -86,7 +89,7 @@ public class TransactionView extends VerticalLayout implements View {
                     customerOutputGrid.setItems(customerService.getAllCustomer());
                     customerOutputGrid.markAsDirty();
                 } catch (CustomerAlreadyExistException customerAlreadyExistException) {
-                    Notification.show(customerAlreadyExistException.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    Notification.show(customerAlreadyExistException.getErrors().get(0), Notification.Type.ERROR_MESSAGE);
                 }
             });
             content.setMargin(true);
@@ -113,8 +116,17 @@ public class TransactionView extends VerticalLayout implements View {
 
 
     private VerticalLayout buildAccount(GetCustomerOutput getCustomerOutput) {
-        accountLayout = new VerticalLayout();
+        if (accountLayout != null) {
+            accountLayout.removeAllComponents();
+            if(transactionLayout != null){
+                transactionLayout.removeAllComponents();
+            }
+        } else {
+            accountLayout = new VerticalLayout();
+        }
+
         getAccountOutputGrid = new Grid<>();
+        getAccountOutputGrid.setCaption("Accounts");
         getAccountOutputGrid.setItems(accountService.getCustomerAccounts(getCustomerOutput.getId()));
         getAccountOutputGrid.addColumn(getAccountOutput -> getAccountOutput.getId()).setCaption("Id");
         getAccountOutputGrid.addColumn(getAccountOutput -> getAccountOutput.getCustomerId()).setCaption("Customer Id");
@@ -132,6 +144,7 @@ public class TransactionView extends VerticalLayout implements View {
 
             content.addComponent(new Label("Amount"));
             TextField amount = new TextField();
+            amount.addValueChangeListener(new ValueEnterListener());
             content.addComponent(amount);
 
             Button add = new Button("add");
@@ -144,7 +157,7 @@ public class TransactionView extends VerticalLayout implements View {
                     getAccountOutputGrid.setItems(accountService.getCustomerAccounts(getCustomerOutput.getId()));
                     getAccountOutputGrid.markAsDirty();
                 } catch (CustomerNotFoundException | AccountNotFoundException | InsufficientBalanceException e) {
-                    Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    Notification.show(e.getErrors().get(0), Notification.Type.ERROR_MESSAGE);
                 }
             });
             content.setMargin(true);
@@ -167,8 +180,14 @@ public class TransactionView extends VerticalLayout implements View {
 
 
     private VerticalLayout buildTransaction(GetAccountOutput getAccountOutput) {
-        VerticalLayout verticalLayout = new VerticalLayout();
-        Grid<AccountTransactionOutput> transactionGrid = new Grid<>();
+        if (transactionLayout != null) {
+            transactionLayout.removeAllComponents();
+        } else {
+            transactionLayout = new VerticalLayout();
+        }
+
+        transactionGrid = new Grid<>();
+        transactionGrid.setCaption("Transactions");
         try {
             transactionGrid.setItems(accountService.getAccountTransactions(getAccountOutput.getId()).getAccountTransactionOutputs());
         } catch (AccountNotFoundException accountNotFoundException) {
@@ -177,7 +196,7 @@ public class TransactionView extends VerticalLayout implements View {
         }
         transactionGrid.addColumn(transactionOutput -> transactionOutput.getAmount()).setCaption("Amount");
         transactionGrid.addColumn(transactionOutput -> transactionOutput.getTransactionDate()).setCaption("Date");
-        verticalLayout.addComponent(transactionGrid);
+        transactionLayout.addComponent(transactionGrid);
         Button addTransaction = new Button("Add Transaction");
         addTransaction.addClickListener(event -> {
             Window window = new Window("Add Transaction");
@@ -185,7 +204,8 @@ public class TransactionView extends VerticalLayout implements View {
             final FormLayout content = new FormLayout();
 
             content.addComponent(new Label("Amount"));
-            TextField amount = new TextField();
+            TextField amount = new TextField(new ValueEnterListener());
+            amount.addValueChangeListener(new ValueEnterListener());
             content.addComponent(amount);
 
             Button add = new Button("add");
@@ -198,15 +218,27 @@ public class TransactionView extends VerticalLayout implements View {
                     getAccountOutputGrid.setItems(accountService.getCustomerAccounts(getAccountOutput.getCustomerId()));
                     window.close();
                 } catch (AccountNotFoundException | InsufficientBalanceException e) {
-                    Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    Notification.show(e.getErrors().get(0), Notification.Type.ERROR_MESSAGE);
                 }
             });
             content.setMargin(true);
             window.setContent(content);
             UI.getCurrent().addWindow(window);
         });
-        verticalLayout.addComponent(addTransaction);
-        return verticalLayout;
+        transactionLayout.addComponent(addTransaction);
+        return transactionLayout;
     }
 
+}
+
+class ValueEnterListener implements HasValue.ValueChangeListener<String> {
+    @Override
+    public void valueChange(HasValue.ValueChangeEvent<String> valueChangeEvent) {
+        try {
+            Long.parseLong(valueChangeEvent.getValue());
+        }catch (Exception e){
+            valueChangeEvent.getSource().setValue("");
+        }
+
+    }
 }

@@ -33,7 +33,7 @@ public class ApplicationStartup
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         tracer.createSpan("init");
-        AddCustomerInput addCustomerInput = AddCustomerInput.builder().name("name").surname("surname").identityNumber("tr").build();
+        AddCustomerInput addCustomerInput = AddCustomerInput.builder().name("name").surname("surname").identityNumber("12345").build();
         try {
             customerService.addCustomer(addCustomerInput);
         } catch (CustomerAlreadyExistException customerAlreadyExistException) {
