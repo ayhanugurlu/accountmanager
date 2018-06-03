@@ -38,8 +38,6 @@ public class TransactionUI extends UI {
     public void router(String route) {
 
         getNavigator().navigateTo(route);
-
-
     }
 
 }

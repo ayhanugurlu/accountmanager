@@ -74,7 +74,7 @@ public class TransactionView extends VerticalLayout implements View {
             content.addComponent(new Label("Surname"));
             TextField surname = new TextField();
             content.addComponent(surname);
-            content.addComponent(new Label("Nationality Id"));
+            content.addComponent(new Label("Identity Number"));
             TextField identityNumber = new TextField();
             content.addComponent(identityNumber);
             Button add = new Button("add");
