@@ -15,12 +15,14 @@ import java.util.List;
 public interface CustomerService {
 
     /**
+     * Lists all customers
      *
      * @return
      */
     List<GetCustomerOutput> getAllCustomer();
 
     /**
+     * Finds customer by id
      *
      * @param id
      * @return
@@ -29,7 +31,7 @@ public interface CustomerService {
     GetCustomerOutput getCustomer(long id) throws CustomerNotFoundException;
 
     /**
-     *
+     * Finds customer by identity number
      * @param identityNumber
      * @return
      * @throws CustomerNotFoundException
@@ -37,6 +39,7 @@ public interface CustomerService {
     GetCustomerOutput getCustomerByIdentityNumber(String identityNumber) throws CustomerNotFoundException;
 
     /**
+     * Adds customer
      *
      * @param addCustomerInput
      * @return

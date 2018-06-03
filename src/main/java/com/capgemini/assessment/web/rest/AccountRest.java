@@ -41,7 +41,7 @@ public class AccountRest {
 
     @ApiOperation(value = "add account for customer",
             notes = "add account for customer<br/>")
-    @PostMapping("addAccount")
+    @PostMapping("account")
     public @ResponseBody
     AddAccountResponse addAccount(@ApiParam(value = "owner id, currency type, amount") @RequestBody AddAccountRequest addAccountRequest) throws CustomerNotFoundException, AccountNotFoundException, InsufficientBalanceException {
         log.debug("addAccount method start", tracer.getCurrentSpan().getTraceId());
@@ -55,7 +55,7 @@ public class AccountRest {
 
     @ApiOperation(value = "get account transactions",
             notes = "get account transactions<br/>")
-    @GetMapping("getAccountTransactions/{id}")
+    @GetMapping("account/{id}")
     public @ResponseBody
     GetAccountTransactionResponse getAccountTransactions(@ApiParam(value = "Account id") @PathVariable(name = "id") long accountId) throws AccountNotFoundException {
         log.debug("getAccountTransactions method start", tracer.getCurrentSpan().getTraceId());

@@ -41,21 +41,21 @@ public class AccountRestTest {
         //add customer
         AddCustomerRequest addCustomerRequest = AddCustomerRequest.builder().name("name").surname("surname").identityNumber("xx").build();
         HttpEntity<AddCustomerRequest> addCustomerRequestHttpEntity = new HttpEntity<>(addCustomerRequest, headers);
-        ResponseEntity<AddCustomerResponse> addCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/addCustomer"),
+        ResponseEntity<AddCustomerResponse> addCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/customer"),
                 HttpMethod.POST, addCustomerRequestHttpEntity, AddCustomerResponse.class);
         addCustomerResponse = addCustomerResponseResponseEntity.getBody();
 
         //add account
         AddAccountRequest addAccountRequest = AddAccountRequest.builder().customerId(addCustomerResponse.getCustomerId()).currency("TRY").build();
         HttpEntity<AddAccountRequest> addCustomerAccountRequestHttpEntity = new HttpEntity<>(addAccountRequest, headers);
-        ResponseEntity<AddAccountResponse> addCustomerAccountResponseResponseEntity = restTemplate.exchange(createURLWithPort("/addAccount"),
+        ResponseEntity<AddAccountResponse> addCustomerAccountResponseResponseEntity = restTemplate.exchange(createURLWithPort("/account"),
                 HttpMethod.POST, addCustomerAccountRequestHttpEntity, AddAccountResponse.class);
         addAccountResponse = addCustomerAccountResponseResponseEntity.getBody();
 
         //add transaction
         TransactionRequest transactionRequest = TransactionRequest.builder().accountId(addAccountResponse.getId()).amount(10).build();
         HttpEntity<TransactionRequest> transactionRequestHttpEntity = new HttpEntity<>(transactionRequest, headers);
-        ResponseEntity<TransactionResponse> transactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/makeTransaction"), HttpMethod.POST, transactionRequestHttpEntity, TransactionResponse.class);
+        ResponseEntity<TransactionResponse> transactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/transaction"), HttpMethod.POST, transactionRequestHttpEntity, TransactionResponse.class);
         System.out.println(transactionResponseResponseEntity);
 
     }
@@ -67,28 +67,26 @@ public class AccountRestTest {
         //CustomerNotFoundException
         AddAccountRequest addAccountRequest = AddAccountRequest.builder().customerId(-1).currency("TRY").build();
         HttpEntity<AddAccountRequest> addCustomerAccountRequestHttpEntity = new HttpEntity<>(addAccountRequest, headers);
-        ResponseEntity<AddAccountResponse> addCustomerAccountResponseResponseEntity = restTemplate.exchange(createURLWithPort("/addAccount"),
+        ResponseEntity<AddAccountResponse> addCustomerAccountResponseResponseEntity = restTemplate.exchange(createURLWithPort("/account"),
                 HttpMethod.POST, addCustomerAccountRequestHttpEntity, AddAccountResponse.class);
         Assert.assertEquals(addCustomerAccountResponseResponseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
 
         //AddAccount
         addAccountRequest = AddAccountRequest.builder().customerId(addCustomerResponse.getCustomerId()).currency("TRY").build();
         addCustomerAccountRequestHttpEntity = new HttpEntity<>(addAccountRequest, headers);
-        addCustomerAccountResponseResponseEntity = restTemplate.exchange(createURLWithPort("/addAccount"),
+        addCustomerAccountResponseResponseEntity = restTemplate.exchange(createURLWithPort("/account"),
                 HttpMethod.POST, addCustomerAccountRequestHttpEntity, AddAccountResponse.class);
         Assert.assertEquals(addCustomerAccountResponseResponseEntity.getStatusCode(), HttpStatus.OK);
         Assert.assertEquals(addCustomerAccountResponseResponseEntity.getBody().getCustomerId(), addCustomerResponse.getCustomerId());
 
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<GetAccountTransactionResponse> getAccountTransactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/getAccountTransactions/" + addAccountResponse.getId()),
+        ResponseEntity<GetAccountTransactionResponse> getAccountTransactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/account/" + addAccountResponse.getId()),
                 HttpMethod.GET, entity, GetAccountTransactionResponse.class);
         Assert.assertEquals(getAccountTransactionResponseResponseEntity.getStatusCode(), HttpStatus.OK);
         Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getName(), "name");
         Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getSurname(), "surname");
         Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getTransactionResponses().size(), 1);
         Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getTransactionResponses().get(0).getAmount(), 10);
-
-
     }
 
     private String createURLWithPort(String uri) {

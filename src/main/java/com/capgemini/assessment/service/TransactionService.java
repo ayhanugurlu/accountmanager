@@ -11,6 +11,7 @@ import com.capgemini.assessment.service.model.output.transaction.TransactionOutp
 public interface TransactionService {
 
     /**
+     * Makes transaction to the account
      *
      * @param transactionInout
      * @return

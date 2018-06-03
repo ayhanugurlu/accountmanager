@@ -34,8 +34,8 @@ public class CustomerRest {
     private Tracer tracer;
 
     @ApiOperation(value = "get customer ",
-            notes = "Finds customer by identity number and returns it.<br/>")
-    @GetMapping("getCustomer/{id}")
+            notes = "Finds customer by identity number.<br/>")
+    @GetMapping("customer/{id}")
     public @ResponseBody
     GetCustomerResponse getCustomer(@ApiParam(value = "nationality id") @PathVariable(name = "id") String identityNumber) throws CustomerNotFoundException {
         log.debug("getCustomer method start", tracer.getCurrentSpan().getTraceId());
@@ -46,8 +46,8 @@ public class CustomerRest {
     }
 
     @ApiOperation(value = "add customer",
-            notes = "add customer if does not exist.<br/>")
-    @PostMapping("addCustomer")
+            notes = "Adds customer if does not exist.<br/>")
+    @PostMapping("customer")
     public @ResponseBody
     AddCustomerResponse addCustomer(@ApiParam(value = "nationality id, name and surname") @RequestBody AddCustomerRequest addCustomerRequest) throws CustomerAlreadyExistException {
         log.debug("addCustomer method start", tracer.getCurrentSpan().getTraceId());

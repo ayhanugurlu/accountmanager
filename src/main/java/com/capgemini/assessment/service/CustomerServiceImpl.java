@@ -67,7 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         Customer newCust = repository.save(mapperFacade.map(addCustomerInput, Customer.class));
         AddCustomerOutput addCustomerOutput = mapperFacade.map(newCust, AddCustomerOutput.class);
-        log.debug("addCustomer method start", tracer.getCurrentSpan().getTraceId());
+        log.debug("addCustomer method finish", tracer.getCurrentSpan().getTraceId());
         return addCustomerOutput;
     }
 }

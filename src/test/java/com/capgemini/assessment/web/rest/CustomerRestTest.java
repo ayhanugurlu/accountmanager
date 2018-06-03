@@ -32,30 +32,30 @@ public class CustomerRestTest {
     public void customerRestTest() throws Exception {
         //customer not found
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<GetCustomerResponse> getCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/getCustomer/1"),
+        ResponseEntity<GetCustomerResponse> getCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/customer/1"),
                 HttpMethod.GET, entity, GetCustomerResponse.class);
         Assert.assertEquals(getCustomerResponseResponseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
 
         //add customer
         AddCustomerRequest addCustomerRequest = AddCustomerRequest.builder().name("name").surname("surname").identityNumber("12").build();
         HttpEntity<AddCustomerRequest> addCustomerRequestHttpEntity = new HttpEntity<>(addCustomerRequest, headers);
-        ResponseEntity<AddCustomerResponse> addCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/addCustomer"),
+        ResponseEntity<AddCustomerResponse> addCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/customer"),
                 HttpMethod.POST, addCustomerRequestHttpEntity, AddCustomerResponse.class);
         Assert.assertEquals(addCustomerResponseResponseEntity.getStatusCode(), HttpStatus.OK);
 
 
-        getCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/getCustomer/12"),
+        getCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/customer/12"),
                 HttpMethod.GET, entity, GetCustomerResponse.class);
         Assert.assertEquals(getCustomerResponseResponseEntity.getStatusCode(), HttpStatus.OK);
         Assert.assertEquals(addCustomerResponseResponseEntity.getBody().getCustomerId(), getCustomerResponseResponseEntity.getBody().getId());
 
         //duplicate customer
-        ResponseEntity<AddCustomerResponse> duplicateResponse = restTemplate.exchange(createURLWithPort("/addCustomer"),
+        ResponseEntity<AddCustomerResponse> duplicateResponse = restTemplate.exchange(createURLWithPort("/customer"),
                 HttpMethod.POST, addCustomerRequestHttpEntity, AddCustomerResponse.class);
         Assert.assertEquals(duplicateResponse.getStatusCode(), HttpStatus.CONFLICT);
 
         ///get customer
-        getCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/getCustomer/12"),
+        getCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/customer/12"),
                 HttpMethod.GET, entity, GetCustomerResponse.class);
         Assert.assertEquals(getCustomerResponseResponseEntity.getStatusCode(), HttpStatus.OK);
         Assert.assertEquals(getCustomerResponseResponseEntity.getBody().getName(), "name");

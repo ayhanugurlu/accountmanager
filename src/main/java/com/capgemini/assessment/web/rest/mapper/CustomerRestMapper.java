@@ -17,6 +17,10 @@ import org.springframework.stereotype.Component;
 public class CustomerRestMapper extends ConfigurableMapper {
 
 
+    /**
+     * Configuration of data convertion for Customer from data layer to presentation url
+     * @param factory
+     */
     protected void configure(MapperFactory factory) {
         factory.classMap(AddCustomerRequest.class, AddCustomerInput.class)
                 .byDefault()

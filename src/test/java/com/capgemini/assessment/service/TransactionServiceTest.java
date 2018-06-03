@@ -72,7 +72,7 @@ public class TransactionServiceTest {
 
 
     @Test
-    public void doTransactionTest() throws AccountNotFoundException, InsufficientBalanceException {
+    public void makeTransactionAccountNotFoundTest() throws InsufficientBalanceException {
 
 
         try {
@@ -82,12 +82,23 @@ public class TransactionServiceTest {
             Assert.assertEquals(accountNotFoundException.getErrorCode(), ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
+
+    }
+
+    @Test
+    public void makeTransactionInsufficentBalanceTest() throws AccountNotFoundException, InsufficientBalanceException {
         try {
             TransactionInput transactionInput = TransactionInput.builder().accountId(1).amount(-20).build();
             TransactionOutput transactionOutput = transactionService.makeTransaction(transactionInput);
         } catch (InsufficientBalanceException insufficientBalanceException) {
             Assert.assertEquals(insufficientBalanceException.getErrorCode(), ErrorCode.INSUFFICENT_BALANCE);
         }
+    }
+
+
+    @Test
+    public void makeTransactionTest() throws AccountNotFoundException, InsufficientBalanceException {
+
         TransactionInput transactionInput = TransactionInput.builder().accountId(1).amount(-5).build();
         TransactionOutput transactionOutput = transactionService.makeTransaction(transactionInput);
         Assert.assertEquals(transactionOutput.getId(), 2);

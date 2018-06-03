@@ -82,28 +82,44 @@ public class AccountServiceTest {
         when(transactionService.makeTransaction(any(TransactionInput.class))).thenReturn(transactionOutput);
     }
 
-    @Test
-    public void accountServiceTest() throws CustomerNotFoundException, AccountNotFoundException, InsufficientBalanceException {
+
+    public void addAccountTest() throws CustomerNotFoundException, AccountNotFoundException, InsufficientBalanceException {
         AddAccountInput addAccountInput = AddAccountInput.builder().amount(10).customerId(1).currency("TRY").build();
         AddAccountOutput addAccountOutput = accountService.addAccount(addAccountInput);
         Assert.assertEquals(addAccountOutput.getId(), 1l);
         Assert.assertEquals(addAccountOutput.getCurrency(), "TRY");
         Assert.assertEquals(addAccountOutput.getCustomerId(), 2);
-        addAccountInput = AddAccountInput.builder().amount(-10).customerId(1).currency("TRY").build();
+
+
+
+    }
+
+    public void accountInsuffıcentBalanceTest() throws CustomerNotFoundException, AccountNotFoundException {
+
+        AddAccountInput addAccountInput = AddAccountInput.builder().amount(-10).customerId(1).currency("TRY").build();
         try {
-            addAccountOutput = accountService.addAccount(addAccountInput);
+            AddAccountOutput addAccountOutput = accountService.addAccount(addAccountInput);
         } catch (InsufficientBalanceException insufficientBalanceException) {
             Assert.assertEquals(insufficientBalanceException.getErrorCode(), ErrorCode.INSUFFICENT_BALANCE);
         }
 
-        List<GetAccountOutput> getAccountOutputs = accountService.getCustomerAccounts(1);
-        Assert.assertEquals(getAccountOutputs.size(), 1);
+    }
+
+
+    public void accountNotFoundTest() {
 
         try {
             GetTransactionOutput getTransactionOutput = accountService.getAccountTransactions(1);
         } catch (AccountNotFoundException accountNotFoundException) {
             Assert.assertEquals(accountNotFoundException.getErrorCode(), ErrorCode.ACCOUNT_NOT_FOUND);
         }
+
+    }
+
+
+    @Test
+    public void getAccountTransactionsTest() throws  AccountNotFoundException {
+
         GetTransactionOutput getTransactionOutput = accountService.getAccountTransactions(2);
         Assert.assertEquals(getTransactionOutput.getAccountTransactionOutputs().size(), 1);
 

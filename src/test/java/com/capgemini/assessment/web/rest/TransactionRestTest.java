@@ -37,10 +37,10 @@ public class TransactionRestTest {
         //add customer
         AddCustomerRequest addCustomerRequest = AddCustomerRequest.builder().name("name").surname("surname").identityNumber("tr").build();
         HttpEntity<AddCustomerRequest> addCustomerRequestHttpEntity = new HttpEntity<>(addCustomerRequest, headers);
-        ResponseEntity<AddCustomerResponse> addCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/addCustomer"),
+        ResponseEntity<AddCustomerResponse> addCustomerResponseResponseEntity = restTemplate.exchange(createURLWithPort("/customer"),
                 HttpMethod.POST, addCustomerRequestHttpEntity, AddCustomerResponse.class);
 
-        //AddAccount
+        //add account
         AddAccountRequest addAccountRequest = AddAccountRequest.builder().customerId(1).currency("TRY").build();
         HttpEntity<AddAccountRequest> addCustomerAccountRequestHttpEntity = new HttpEntity<>(addAccountRequest, headers);
         ResponseEntity<AddAccountResponse> addCustomerAccountResponseResponseEntity = restTemplate.exchange(createURLWithPort("/addAccount"),
@@ -52,19 +52,19 @@ public class TransactionRestTest {
         //makeTransaction
         TransactionRequest transactionRequest = TransactionRequest.builder().accountId(1).amount(10).build();
         HttpEntity<TransactionRequest> transactionRequestHttpEntity = new HttpEntity<>(transactionRequest, headers);
-        ResponseEntity<TransactionResponse> transactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/makeTransaction"), HttpMethod.POST, transactionRequestHttpEntity, TransactionResponse.class);
+        ResponseEntity<TransactionResponse> transactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/transaction"), HttpMethod.POST, transactionRequestHttpEntity, TransactionResponse.class);
         Assert.assertEquals(transactionResponseResponseEntity.getStatusCode(), HttpStatus.OK);
 
         //AccountNotFoundException
         transactionRequest = TransactionRequest.builder().accountId(-1).amount(10).build();
         transactionRequestHttpEntity = new HttpEntity<>(transactionRequest, headers);
-        transactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/makeTransaction"), HttpMethod.POST, transactionRequestHttpEntity, TransactionResponse.class);
+        transactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/transaction"), HttpMethod.POST, transactionRequestHttpEntity, TransactionResponse.class);
         Assert.assertEquals(transactionResponseResponseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
 
         //InsufficientBalanceException
         transactionRequest = TransactionRequest.builder().accountId(1).amount(-110).build();
         transactionRequestHttpEntity = new HttpEntity<>(transactionRequest, headers);
-        transactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/makeTransaction"), HttpMethod.POST, transactionRequestHttpEntity, TransactionResponse.class);
+        transactionResponseResponseEntity = restTemplate.exchange(createURLWithPort("/transaction"), HttpMethod.POST, transactionRequestHttpEntity, TransactionResponse.class);
         Assert.assertEquals(transactionResponseResponseEntity.getStatusCode(), HttpStatus.BAD_REQUEST);
 
 
