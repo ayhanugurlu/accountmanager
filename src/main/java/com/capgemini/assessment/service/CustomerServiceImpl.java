@@ -35,8 +35,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<GetCustomerOutput> getAllCustomer() {
+        log.debug("getAllCustomer method start", tracer.getCurrentSpan().getTraceId());
         List<GetCustomerOutput> customerOutputs = new ArrayList<>();
         repository.findAll().forEach(customer -> customerOutputs.add(mapperFacade.map(customer, GetCustomerOutput.class)));
+        log.debug("getAllCustomer method finish", tracer.getCurrentSpan().getTraceId());
         return customerOutputs;
     }
 

@@ -83,8 +83,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<GetAccountOutput> getCustomerAccounts(long customerId) {
+        log.debug("getCustomerAccounts method start", tracer.getCurrentSpan().getTraceId());
         List<Account> accounts = accountRepository.findAccountsByCustomer_Id(customerId);
         List<GetAccountOutput> result = accounts.stream().map(account -> mapperFacade.map(account, GetAccountOutput.class)).collect(Collectors.toList());
+        log.debug("getCustomerAccounts method finish", tracer.getCurrentSpan().getTraceId());
         return result;
     }
 

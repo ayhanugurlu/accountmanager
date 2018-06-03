@@ -40,6 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     @Override
     public TransactionOutput makeTransaction(TransactionInput transactionInput) throws AccountNotFoundException, InsufficientBalanceException {
+        log.debug("makeTransaction method start", tracer.getCurrentSpan().getTraceId());
         Optional<Account> account = Optional.ofNullable(accountRepository.findOne(transactionInput.getAccountId()));
         account.orElseThrow(() -> new AccountNotFoundException(transactionInput.getAccountId()));
         long total = account.get().getBalance() + transactionInput.getAmount();
@@ -52,6 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTransactionDate(new Date());
         transaction = transactionRepository.save(transaction);
         TransactionOutput transactionOutput = mapperFacade.map(transaction, TransactionOutput.class);
+        log.debug("makeTransaction method finish", tracer.getCurrentSpan().getTraceId());
         return transactionOutput;
     }
 }
