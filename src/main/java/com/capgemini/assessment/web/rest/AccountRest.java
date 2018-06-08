@@ -42,8 +42,7 @@ public class AccountRest {
     @ApiOperation(value = "add account for customer",
             notes = "add account for customer<br/>")
     @PostMapping("account")
-    public @ResponseBody
-    AddAccountResponse addAccount(@ApiParam(value = "owner id, currency, amount") @RequestBody AddAccountRequest addAccountRequest) throws CustomerNotFoundException, AccountNotFoundException, InsufficientBalanceException {
+    public AddAccountResponse addAccount(@ApiParam(value = "owner id, currency, amount") @RequestBody AddAccountRequest addAccountRequest) throws CustomerNotFoundException, AccountNotFoundException, InsufficientBalanceException {
         log.debug("addAccount method start", tracer.getCurrentSpan().getTraceId());
         AddAccountInput input = mapperFacade.map(addAccountRequest, AddAccountInput.class);
         AddAccountOutput output = accountService.addAccount(input);
@@ -56,13 +55,12 @@ public class AccountRest {
     @ApiOperation(value = "get account transactions",
             notes = "get account transactions<br/>")
     @GetMapping("account/{id}")
-    public @ResponseBody
-    GetAccountTransactionResponse getAccountTransactions(@ApiParam(value = "Account id") @PathVariable(name = "id") long accountId) throws AccountNotFoundException {
+    public GetAccountTransactionResponse getAccountTransactions(@ApiParam(value = "Account id") @PathVariable(name = "id") long accountId) throws AccountNotFoundException {
         log.debug("getAccountTransactions method start", tracer.getCurrentSpan().getTraceId());
         GetTransactionOutput output = accountService.getAccountTransactions(accountId);
         GetAccountTransactionResponse getAccountTransactionOutput = mapperFacade.map(output, GetAccountTransactionResponse.class);
         Optional.ofNullable(output).ifPresent(getAccountTransactionOutput1 -> Optional.ofNullable(getAccountTransactionOutput1.getAccountTransactionOutputs()).ifPresent(transactionOutputs -> {
-            getAccountTransactionOutput.setTransactionResponses(transactionOutputs.stream().map(transactionOutput -> mapperFacade.map(transactionOutput, TransactionResponse.class)).collect(Collectors.toList()));
+            getAccountTransactionOutput.setTransactions(transactionOutputs.stream().map(transactionOutput -> mapperFacade.map(transactionOutput, TransactionResponse.class)).collect(Collectors.toList()));
         }));
 
         log.debug("getAccountTransactions method finish", tracer.getCurrentSpan().getTraceId());

@@ -36,8 +36,7 @@ public class CustomerRest {
     @ApiOperation(value = "get customer ",
             notes = "Finds customer by identity number.<br/>")
     @GetMapping("customer/{id}")
-    public @ResponseBody
-    GetCustomerResponse getCustomer(@ApiParam(value = "identity number") @PathVariable(name = "id") String identityNumber) throws CustomerNotFoundException {
+    public GetCustomerResponse getCustomer(@ApiParam(value = "identity number") @PathVariable(name = "id") String identityNumber) throws CustomerNotFoundException {
         log.debug("getCustomer method start", tracer.getCurrentSpan().getTraceId());
         GetCustomerOutput getCustomerOutput = customerService.getCustomerByIdentityNumber(identityNumber);
         GetCustomerResponse getCustomerResponse = mapperFacade.map(getCustomerOutput, GetCustomerResponse.class);
@@ -48,8 +47,7 @@ public class CustomerRest {
     @ApiOperation(value = "add customer",
             notes = "Adds customer if does not exist.<br/>")
     @PostMapping("customer")
-    public @ResponseBody
-    AddCustomerResponse addCustomer(@ApiParam(value = "identity number, name and surname") @RequestBody AddCustomerRequest addCustomerRequest) throws CustomerAlreadyExistException {
+    public AddCustomerResponse addCustomer(@ApiParam(value = "identity number, name and surname") @RequestBody AddCustomerRequest addCustomerRequest) throws CustomerAlreadyExistException {
         log.debug("addCustomer method start", tracer.getCurrentSpan().getTraceId());
         AddCustomerInput input = mapperFacade.map(addCustomerRequest, AddCustomerInput.class);
         AddCustomerOutput output = customerService.addCustomer(input);

@@ -38,8 +38,7 @@ public class TransactionRest {
     @ApiOperation(value = "make transaction ",
             notes = "Makes transaction if account is available.<br/>")
     @PostMapping("transaction")
-    public @ResponseBody
-    TransactionResponse makeTransaction(@ApiParam(value = "account id and amount") @RequestBody TransactionRequest transactionRequest) throws AccountNotFoundException, InsufficientBalanceException {
+    public TransactionResponse makeTransaction(@ApiParam(value = "account id and amount") @RequestBody TransactionRequest transactionRequest) throws AccountNotFoundException, InsufficientBalanceException {
         log.debug("makeTransaction method start", tracer.getCurrentSpan().getTraceId());
         TransactionInput transactionInput = mapperFacade.map(transactionRequest, TransactionInput.class);
         TransactionOutput output = transactionService.makeTransaction(transactionInput);
