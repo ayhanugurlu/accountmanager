@@ -85,8 +85,8 @@ public class AccountRestTest {
         Assert.assertEquals(getAccountTransactionResponseResponseEntity.getStatusCode(), HttpStatus.OK);
         Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getName(), "name");
         Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getSurname(), "surname");
-        Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getTransactionResponses().size(), 1);
-        Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getTransactionResponses().get(0).getAmount(), 10);
+        Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getTransactions().size(), 1);
+        Assert.assertEquals(getAccountTransactionResponseResponseEntity.getBody().getTransactions().get(0).getAmount(), 10);
     }
 
     private String createURLWithPort(String uri) {

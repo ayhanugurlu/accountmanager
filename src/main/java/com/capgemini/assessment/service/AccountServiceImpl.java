@@ -48,11 +48,15 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AddAccountOutput addAccount(AddAccountInput addAccountInput) throws CustomerNotFoundException, AccountNotFoundException, InsufficientBalanceException {
         log.debug("addAccount method start", tracer.getCurrentSpan().getTraceId());
+
+        //check if customer exists and amount is greater than 0 for the initial transaction
         Optional.ofNullable(customerRepository.findOne(addAccountInput.getCustomerId())).orElseThrow(() -> new CustomerNotFoundException(addAccountInput.getCustomerId()));
-        Account account = mapperFacade.map(addAccountInput, Account.class);
-        if (addAccountInput.getAmount() < 0) {
+
+        if (addAccountInput.getAmount() < 0) { //can get an advance?
             throw new InsufficientBalanceException();
         }
+
+        Account account = mapperFacade.map(addAccountInput, Account.class);
         account = accountRepository.save(account);
 
         //if initial amount is greater than 0, make first transaction
@@ -71,6 +75,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public GetTransactionOutput getAccountTransactions(long accountId) throws AccountNotFoundException {
         log.debug("getAccountTransactions method start", tracer.getCurrentSpan().getTraceId());
+
+        //check if account exists
         Account account = accountRepository.findOne(accountId);
         if (account == null) {
             throw new AccountNotFoundException(accountId);
